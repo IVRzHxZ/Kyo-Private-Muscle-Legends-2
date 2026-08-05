@@ -1139,14 +1139,6 @@ end
 -- Create tab after vars are ready
 local Tab = window:AddTab("☠️ Auto Kill") -- Name of tab
 
-Tab:AddButton("Server Hop + Auto Kill", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/IVRzHxZ/Farming-Auto-KIll-in-xKyo/refs/heads/main/farmkillsxkyo"))()
-end)
-
-Tab:AddButton("Kill Counter", function()
-    loadstring(game:HttpGet("https://pastebin.com/raw/MBzGQAVW"))()
-end)
-
 -- [[ UI Elements Setup ]]
 
 Tab:AddSwitch("Loop TP Auto Kill All", function(Value)

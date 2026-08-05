@@ -93,8 +93,7 @@ task.spawn(function()
 end)
 
 -- Create the Tab Layout
-local mainTab = window:AddTab("Farm++")
-Farm++:Show() -- Forces Elerium layout to render properly
+local mainTab = window:AddTab("Farm")
 
 -- 3. ANTI-AFK SWITCH (Elerium v2 UI Library Edition - Non-Draggable & Extra Large Rainbow)
 local Players = game:GetService("Players")
@@ -492,7 +491,7 @@ mainTab:AddSwitch("LoopSpeed 500", function(state)
     end
 end)
 
-local mainTab = window:AddTab("Egg")
+local mainTab = window:AddTab("Crystals")
 
 -- State variables
 local autoOpenActive = false

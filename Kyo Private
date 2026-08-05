@@ -151,7 +151,7 @@ TextLabel.Parent = MainFrame
 
 
 -- 3. Add to your Elerium Tab
-local AntiAFKSwitch = FarmTab:AddSwitch("Anti-AFK ☕", function(bool)
+local AntiAFKSwitch = mainTab:AddSwitch("Anti-AFK ☕", function(bool)
     if bool then
         -- Make the ScreenGui container visible
         MainFrame.Visible = true
@@ -268,7 +268,7 @@ playerGui.DescendantAdded:Connect(function(descendant)
 end)
 
 -- Hooked directly into your Elerium v2 switch
-FarmTab:AddSwitch("Hide All UI Frames", function(state)
+mainTab:AddSwitch("Hide All UI Frames", function(state)
     _G.HideGainedPopups = state
     if state then
         for _, desc in ipairs(playerGui:GetDescendants()) do

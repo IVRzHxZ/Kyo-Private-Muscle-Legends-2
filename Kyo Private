@@ -93,8 +93,8 @@ task.spawn(function()
 end)
 
 -- Create the Tab Layout
-local mainTab = window:AddTab("Main")
-mainTab:Show() -- Forces Elerium layout to render properly
+local mainTab = window:AddTab("Farm++")
+Farm++:Show() -- Forces Elerium layout to render properly
 
 -- 3. ANTI-AFK SWITCH (Elerium v2 UI Library Edition - Non-Draggable & Extra Large Rainbow)
 local Players = game:GetService("Players")
@@ -490,6 +490,62 @@ mainTab:AddSwitch("LoopSpeed 500", function(state)
             end
         end
     end
+end)
+
+local mainTab = window:AddTab("Egg")
+
+-- State variables
+local autoOpenActive = false
+local selectedCrystal = "Secret Void Crystal" -- Default tracking option
+
+-- Optimized internal nil asset scanner
+local function getNil(name, class)
+    local instances = getnilinstances()
+    for i = 1, #instances do
+        local v = instances[i]
+        if v.ClassName == class and v.Name == name then 
+            return v
+        end
+    end
+    return nil
+end
+
+-- 1. Create Dropdown to select the target crystal
+local crystalDropdown = mainTab:AddDropdown("Select Crystal", function(choice)
+    selectedCrystal = choice
+end)
+
+-- Populating dropdown items following strict Elerium structural formats
+crystalDropdown:Add("Secret Void Crystal")
+crystalDropdown:Add("Jungle Crystal")
+crystalDropdown:Add("Galaxy Oracle Crystal")
+crystalDropdown:Add("Legends Crystal")
+crystalDropdown:Add("Inferno Crystal")
+crystalDropdown:Add("Mythical Crystal")
+crystalDropdown:Add("Frost Crystal")
+crystalDropdown:Add("Green Crystal")
+crystalDropdown:Add("Blue Crystal")
+
+-- 2. Create the main loop control switch
+mainTab:AddSwitch("Auto Open Selected", function(state)
+    autoOpenActive = state
+    
+    -- Fire loop execution asynchronously to prevent locking the user interface thread
+    task.spawn(function()
+        while autoOpenActive do
+            local args = {
+                [1] = "openCrystal",
+                [2] = selectedCrystal, -- Dynamically passes the dropdown choice string
+                [3] = 1
+            }
+            
+            -- Network invocation block
+            game:GetService("ReplicatedStorage").rEvents.openCrystalRemote:InvokeServer(table.unpack(args))
+            
+            -- Essential structural cycle rest interval
+            task.wait(0.1)
+        end
+    end)
 end)
 
 local _Teleport = window:AddTab('Teleport')

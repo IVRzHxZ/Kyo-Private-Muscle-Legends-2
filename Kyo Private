@@ -333,6 +333,58 @@ mainTab:AddSwitch("Fast Reps Weight", function(state)
     end
 end)
 
+-- Push Ups -- References
+local player = game:GetService("Players").LocalPlayer
+local replicatedStorage = game:GetService("ReplicatedStorage")
+
+-- Helper function to handle auto-equipping push up tools
+local function autoEquipPushUps()
+    local character = player.Character
+    if not character then return end
+    
+    -- Check if already equipped
+    for _, item in pairs(character:GetChildren()) do
+        if item:IsA("Tool") and string.find(string.lower(item.Name), "push") then
+            return 
+        end
+    end
+    
+    -- Look in backpack and equip
+    local backpack = player:FindFirstChild("Backpack")
+    if backpack then
+        for _, tool in pairs(backpack:GetChildren()) do
+            if tool:IsA("Tool") and string.find(string.lower(tool.Name), "push") then
+                local humanoid = character:FindFirstChildOfClass("Humanoid")
+                if humanoid then
+                    humanoid:EquipTool(tool)
+                    break
+                end
+            end
+        end
+    end
+end
+
+-- SWITCH 1: Auto Reps + Auto Equip
+mainTab:AddSwitch("Fast Reps Push Ups", function(state)
+    farmActive = state
+    
+    if farmActive then
+        task.spawn(function()
+            while farmActive do
+                autoEquipPushUps()
+                
+                if player and player:FindFirstChild("muscleEvent") then
+                    local args = {
+                        [1] = "rep"
+                    }
+                    player.muscleEvent:FireServer(unpack(args))
+                end
+                task.wait(0.1) 
+            end
+        end)
+    end
+end)
+
 -- SWITCH 2: Auto Rebirth (500)
 mainTab:AddSwitch("Fast Rebirth (500)", function(state)
     rebirthActive = state

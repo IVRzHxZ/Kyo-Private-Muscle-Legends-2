@@ -518,6 +518,7 @@ end)
 crystalDropdown:Add("Secret Void Crystal")
 crystalDropdown:Add("Jungle Crystal")
 crystalDropdown:Add("Galaxy Oracle Crystal")
+crystalDropdown:Add("Muscle Elite Crystal")
 crystalDropdown:Add("Legends Crystal")
 crystalDropdown:Add("Inferno Crystal")
 crystalDropdown:Add("Mythical Crystal")
@@ -543,6 +544,54 @@ mainTab:AddSwitch("Auto Open Selected", function(state)
             
             -- Essential structural cycle rest interval
             task.wait(0.1)
+        end
+    end)
+end)
+
+mainTab:AddLabel("Secret Void Crystal")
+
+-- The specific sellPet remote script wrapped inside an AddSwitch loop
+mainTab:AddSwitch("Auto Sell Dual Dynasty Dogs", function(state)
+    getgenv().AutoSell = state
+    
+    -- When the switch is turned ON, start a repeating loop
+    task.spawn(function()
+        while getgenv().AutoSell do
+            local args = {
+                [1] = "sellPet",
+                [2] = "Dual Dynasty Dogs"
+            }
+            local remote = game:GetService("ReplicatedStorage"):WaitForChild("rEvents", 3):WaitForChild("sellPetEvent", 3)
+            
+            if remote then
+                remote:FireServer(unpack(args))
+            end
+            
+            -- Adjust this delay (in seconds) so the server doesn't kick you for spamming
+            task.wait(0.1) 
+        end
+    end)
+end)
+
+-- The specific sellPet remote script wrapped inside an AddSwitch loop
+mainTab:AddSwitch("Auto Sell Dual Chaos Birdies", function(state)
+    getgenv().AutoSell = state
+    
+    -- When the switch is turned ON, start a repeating loop
+    task.spawn(function()
+        while getgenv().AutoSell do
+            local args = {
+                [1] = "sellPet",
+                [2] = "Dual Chaos Birdies"
+            }
+            local remote = game:GetService("ReplicatedStorage"):WaitForChild("rEvents", 3):WaitForChild("sellPetEvent", 3)
+            
+            if remote then
+                remote:FireServer(unpack(args))
+            end
+            
+            -- Adjust this delay (in seconds) so the server doesn't kick you for spamming
+            task.wait(0.1) 
         end
     end)
 end)

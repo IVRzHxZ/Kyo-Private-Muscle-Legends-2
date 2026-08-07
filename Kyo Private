@@ -714,7 +714,7 @@ if _G.LocalTracker then _G.LocalTracker = nil end
 _G.LocalTracker = {
     Config = {
         Stats = {"Strength", "Durability", "Rebirths", "Agility", "Kills", "Brawls", "Good Karma", "Evil Karma", "Gems"},
-        Suffixes = {"K", "M", "B", "T", "QA", "QI"}
+        Suffixes = {"K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc", "UDc", "DDc", "TDc", "QaDc", "QiDc", "SxDc", "SpDc", "ODc", "NDc", "Vg"}
     },
     Labels = {},
     StartStats = {},
@@ -738,10 +738,13 @@ end
 
 _G.LocalTracker.Utils.formatNumber = function(value)
     if not value or typeof(value) ~= "number" then return "0" end
-    if value < 1000 then return tostring(math.floor(value)) end
-    local index = math.floor(math.log10(value) / 3)
-    local suffix = _G.LocalTracker.Config.Suffixes[index] or ""
-    return string.format("%.1f", value / (10 ^ (index * 3))):gsub("%.0$", "") .. suffix
+    local absVal = math.abs(value)
+    if absVal < 1000 then 
+        return tostring(value < 0 and -math.floor(absVal) or math.floor(absVal)) 
+    end
+    local index = math.floor(math.log10(absVal) / 3)
+    if index > #_G.LocalTracker.Config.Suffixes then index = #_G.LocalTracker.Config.Suffixes end
+    return string.format("%.1f", value / (10 ^ (index * 3))):gsub("%.0$", "") .. (_G.LocalTracker.Config.Suffixes[index] or "")
 end
 
 _G.LocalTracker.Utils.scanForStatFast = function(statName)
@@ -932,7 +935,7 @@ do
     _G.TrackerCore = {
         Config = {
             Stats = {"Strength", "Durability", "Rebirths", "Agility", "Kills", "Brawls", "Good Karma", "Evil Karma", "Gems"},
-            Suffixes = {"K", "M", "B", "T", "QA", "QI", "SX", "SP"}
+            Suffixes = {"K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc", "UDc", "DDc", "TDc", "QaDc", "QiDc", "SxDc", "SpDc", "ODc", "NDc", "Vg"}
         },
         SpyState = { target = nil, startTime = os.time(), labels = {}, start = {}, total = {}, last = {}, rate = {}, ticks = {} },
         Utils = {}
@@ -1006,13 +1009,21 @@ do
     _G.TrackerCore.SpyTab = nil
     pcall(function() _G.TrackerCore.SpyTab = window:AddTab("Spy Stats Player 👁️") end)
 
-    _G.TrackerCore.PlayerDropdown = _G.TrackerCore.SpyTab and _G.TrackerCore.SpyTab:AddDropdown("Select Player...", function(selectedName)
+    _G.TrackerCore.PlayerDropdown = _G.TrackerCore.SpyTab and _G.TrackerCore.SpyTab:AddDropdown("Select Player...", function(selectedDisplayName)
         local S = _G.TrackerCore.SpyState
-        if selectedName == "None" or selectedName == "" then
+        if selectedDisplayName == "None" or selectedDisplayName == "" then
             S.target, S.start, S.total, S.last, S.rate, S.ticks = nil, {}, {}, {}, {}, {}
             return
         end
-        local found = PlayersRef:FindFirstChild(selectedName)
+        
+        local found = nil
+        for _, p in ipairs(PlayersRef:GetPlayers()) do
+            if p.DisplayName == selectedDisplayName then
+                found = p
+                break
+            end
+        end
+
         if found then
             S.target, S.startTime, S.start, S.total, S.last, S.rate, S.ticks = found, os.time(), {}, {}, {}, {}, {}
             local curT = os.time()
@@ -1031,7 +1042,9 @@ do
         pcall(function() _G.TrackerCore.PlayerDropdown:Clear() end) 
         pcall(function() _G.TrackerCore.PlayerDropdown:Add("None") end)
         for _, p in ipairs(PlayersRef:GetPlayers()) do
-            if p ~= LocalPlayerRef then pcall(function() _G.TrackerCore.PlayerDropdown:Add(p.Name) end) end
+            if p ~= LocalPlayerRef then 
+                pcall(function() _G.TrackerCore.PlayerDropdown:Add(p.DisplayName) end) 
+            end
         end
     end
 
